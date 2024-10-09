@@ -1,5 +1,6 @@
+// pages/login.tsx
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import pb from '../../services/pocketbase';
 import { useRouter } from 'next/navigation';
 import { Snackbar, Alert } from '@mui/material';
@@ -13,6 +14,13 @@ export default function LoginPage() {
   const [severity, setSeverity] = useState<'error' | 'success'>('success');
   const router = useRouter();
 
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      router.push('/conversations');
+    }
+  }, [router]);
+
   const handleLogin = async () => {
     if (username.trim() === '' || password.trim() === '') {
       setErrorMessage('Username and password are required.');
@@ -22,7 +30,8 @@ export default function LoginPage() {
     }
 
     try {
-      await pb.collection('users').authWithPassword(username, password);
+      const authData = await pb.collection('users').authWithPassword(username, password);
+      localStorage.setItem('auth_token', authData.token);
       setSuccessMessage('Login successful!');
       setSeverity('success');
       setOpenSnackbar(true);

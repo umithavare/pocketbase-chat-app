@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from 'react';
 import pb from '../../services/pocketbase';
-import Link from 'next/link';
+import Layout from '../../components/Layout';
+import { Typography } from '@mui/material';
 
 type Conversation = {
   id: string;
@@ -10,7 +11,7 @@ type Conversation = {
 
 export default function ConversationsPage() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  
+
   useEffect(() => {
     const fetchConversations = async () => {
       const records = await pb.collection('conversations').getFullList<Conversation>({
@@ -23,18 +24,13 @@ export default function ConversationsPage() {
   }, []);
 
   return (
-    <div>
-      <h1>Conversations</h1>
-      {conversations.map((conversation) => (
-        <div key={conversation.id}>
-          <Link href={`/conversations/${conversation.id}`}>
-            {conversation.name}
-          </Link>
-        </div>
-      ))}
-      <Link href="/create-conversation">
-        <button>Create Conversation</button>
-      </Link>
-    </div>
+    <Layout conversations={conversations}>
+      <Typography variant="h4" fontWeight="bold" mb={2}>
+        Welcome to the Chat Application
+      </Typography>
+      <Typography variant="body1">
+        Select a conversation to start chatting, or create a new one!
+      </Typography>
+    </Layout>
   );
 }
