@@ -77,7 +77,7 @@ const Layout: React.FC<LayoutProps> = ({ conversations, selectedConversationId }
         sx={{ padding: 0, margin: 0 }} // Gereksiz boşlukları kaldırmak için padding ve margin sıfırlandı
       >
         {/* Navbar: sabit genişlik ve gizlenmiş scroll */}
-        <Box 
+        {/* <Box 
           sx={{
             width: 250, // Navbar için sabit genişlik
             backgroundColor: '#1e1e1e', // Koyu bir arka plan
@@ -93,12 +93,12 @@ const Layout: React.FC<LayoutProps> = ({ conversations, selectedConversationId }
             padding: 0, // Navbar'ın içinde herhangi bir padding olmadığından emin olalım
             margin: 0, // Navbar'ın dışındaki boşlukları da kaldırıyoruz
           }}
-        >
+        > */}
           <Navbar 
             conversations={conversations} 
             onConversationSelect={handleConversationSelect} 
           />
-        </Box>
+        {/* </Box> */}
 
         {/* Mesajlaşma alanı: ConversationDetails */}
         <Box 
