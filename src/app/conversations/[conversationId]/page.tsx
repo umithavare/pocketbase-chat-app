@@ -136,8 +136,8 @@ export default function ConversationDetails({ conversationId }: ConversationDeta
     return null;
   };
 
-  const getAvatarUrl = (user: User) => {
-    if (user.avatar) {
+  const getAvatarUrl = (user?: User) => {
+    if (user && user.avatar) {
       return `${BASE_URL}/api/files/_pb_users_auth_/${user.id}/${user.avatar}`;
     }
     return null;
