@@ -5,7 +5,7 @@ import { styled } from '@mui/system';
 const StyledNav = styled(Box)({
   width: '80px',
   height: '100vh',
-  backgroundColor: '#121212',
+  backgroundColor: '#1F2937',
   padding: '10px',
   color: '#1e1e1e',
   borderRight: '1px solid #1e1e1e',

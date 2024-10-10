@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import pb from '../../services/pocketbase';
 import { useRouter } from 'next/navigation';
-import { Snackbar, Alert } from '@mui/material';
+import { Snackbar, Alert, Avatar } from '@mui/material';
 
 export default function LoginPage() {
   const [username, setUsername] = useState<string>('');
@@ -55,8 +55,20 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-gray-200">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-3xl font-bold mb-6 text-center text-white">Login</h2>
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg max-w-md w-full relative">
+        <Avatar
+          src="/assets/app-icon.png"
+          alt="Chat App Logo"
+          sx={{
+            width: 80,
+            height: 80,
+            position: 'absolute',
+            top: '-40px',
+            left: 'calc(50% - 40px)',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+          }}
+        />
+        <h2 className="text-3xl font-bold mt-12 mb-6 text-center text-white">Login</h2>
         <div className="mb-4">
           <label className="block text-gray-400 text-sm font-bold mb-2" htmlFor="username">
             Username
