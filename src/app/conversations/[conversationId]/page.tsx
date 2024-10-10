@@ -1,4 +1,4 @@
-"use client";
+//use client;
 import { useEffect, useState, useRef } from 'react';
 import pb from '../../../services/pocketbase';
 import { Box, Typography, TextField, Button, Paper, List, ListItem, ListItemText, Divider, IconButton, CircularProgress, Dialog, DialogContent, Avatar, InputAdornment, Popover } from '@mui/material';
@@ -107,7 +107,7 @@ export default function ConversationDetails({ conversationId }: ConversationDeta
 
   const getFileUrl = (message: Message) => {
     if (message.file && message.file.length > 0) {
-      return `${BASE_URL}/${message.collectionId}/${message.id}/${message.file[0]}`;
+      return `${BASE_URL}/api/files/${message.collectionId}/${message.id}/${message.file[0]}`;
     }
     return null;
   };
