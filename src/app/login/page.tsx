@@ -32,6 +32,9 @@ export default function LoginPage() {
     try {
       const authData = await pb.collection('users').authWithPassword(username, password);
       localStorage.setItem('auth_token', authData.token);
+
+      const user_record = JSON.stringify(authData.record);
+      localStorage.setItem('user_record', user_record);
       setSuccessMessage('Login successful!');
       setSeverity('success');
       setOpenSnackbar(true);
