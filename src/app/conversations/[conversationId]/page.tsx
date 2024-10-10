@@ -20,12 +20,19 @@ type Message = {
   collectionId: string;
 };
 
+type User = {
+  id: string;
+  username: string;
+  avatar: string;
+};
+
 type ConversationDetailsProps = {
   conversationId: string;
 };
 
 export default function ConversationDetails({ conversationId }: ConversationDetailsProps) {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [users, setUsers] = useState<{ [key: string]: User }>({});
   const [newMessage, setNewMessage] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -47,6 +54,23 @@ export default function ConversationDetails({ conversationId }: ConversationDeta
         });
         setMessages(records.reverse());
         scrollToBottom();
+
+        const userIds = Array.from(new Set(records.map((message) => message.sender)));
+        const usersData = await Promise.all(
+          userIds.map(async (userId) => {
+            const user = await pb.collection('users').getOne<User>(userId);
+            return {
+              id: user.id,
+              username: user.username,
+              avatar: user.avatar,
+            };
+          })
+        );
+        const usersMap = usersData.reduce((acc, user) => {
+          acc[user.id] = user;
+          return acc;
+        }, {} as { [key: string]: User });
+        setUsers(usersMap);
       } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
           console.log('Request was aborted');
@@ -112,6 +136,13 @@ export default function ConversationDetails({ conversationId }: ConversationDeta
     return null;
   };
 
+  const getAvatarUrl = (user: User) => {
+    if (user.avatar) {
+      return `${BASE_URL}/api/files/_pb_users_auth_/${user.id}/${user.avatar}`;
+    }
+    return null;
+  };
+
   const handleEmojiClick = (event: React.MouseEvent<HTMLElement>) => {
     setEmojiAnchorEl(event.currentTarget);
   };
@@ -145,50 +176,55 @@ export default function ConversationDetails({ conversationId }: ConversationDeta
     >
       <Paper elevation={3} sx={{ width: '100%', height: '100%', p: 2, mb: 2, bgcolor: '#2f3136', color: '#dcddde', borderRadius: 2 }}>
         <List sx={{ maxHeight: '80vh', overflow: 'auto', mb: 2, bgcolor: '#2f3136', borderRadius: 1 }}>
-          {messages.map((message) => (
-            <ListItem key={message.id} alignItems="flex-start" sx={{ mb: 1 }}>
-              <Avatar sx={{ bgcolor: '#7289da', mr: 2 }}>{message.sender[0]}</Avatar>
-              <ListItemText
-                primary={
-                  <Box display="flex" justifyContent="space-between">
-                    <Typography variant="subtitle2" fontWeight="bold" color="#ffffff">
-                      {message.sender}
-                    </Typography>
-                    <Typography variant="caption" color="#72767d">
-                      {new Date(message.timestamp).toLocaleString()}
-                    </Typography>
-                  </Box>
-                }
-                secondary={
-                  <Box>
-                    <Typography variant="body2" color="#dcddde">
-                      {message.content}
-                    </Typography>
-                    {message.file && message.file.length > 0 && (
-                      message.file[0].endsWith('.jpg') || message.file[0].endsWith('.jpeg') || message.file[0].endsWith('.png') || message.file[0].endsWith('.webp') ? (
-                        <Box mt={1} display="flex" justifyContent="flex-start">
-                          <img
-                            src={getFileUrl(message) || ''}
-                            alt="attachment"
-                            style={{ maxWidth: '100%', maxHeight: 150, borderRadius: 8, cursor: 'pointer' }}
-                            onClick={() => setSelectedImage(getFileUrl(message) || '')}
-                          />
-                        </Box>
-                      ) : (
-                        <Box mt={1} display="flex" justifyContent="flex-start">
-                          <Typography variant="body2" color="#7289da">
-                            <a href={getFileUrl(message) || ''} target="_blank" rel="noopener noreferrer" style={{ color: '#7289da' }}>
-                              {message.file[0]}
-                            </a>
-                          </Typography>
-                        </Box>
-                      )
-                    )}
-                  </Box>
-                }
-              />
-            </ListItem>
-          ))}
+          {messages.map((message) => {
+            const user = users[message.sender];
+            return (
+              <ListItem key={message.id} alignItems="flex-start" sx={{ mb: 1 }}>
+                <Avatar src={getAvatarUrl(user) || undefined} sx={{ bgcolor: '#7289da', mr: 2 }}>
+                  {!user?.avatar && user?.username[0]}
+                </Avatar>
+                <ListItemText
+                  primary={
+                    <Box display="flex" justifyContent="space-between">
+                      <Typography variant="subtitle2" fontWeight="bold" color="#ffffff">
+                        {user?.username || message.sender}
+                      </Typography>
+                      <Typography variant="caption" color="#72767d">
+                        {new Date(message.timestamp).toLocaleString()}
+                      </Typography>
+                    </Box>
+                  }
+                  secondary={
+                    <Box>
+                      <Typography variant="body2" color="#dcddde">
+                        {message.content}
+                      </Typography>
+                      {message.file && message.file.length > 0 && (
+                        message.file[0].endsWith('.jpg') || message.file[0].endsWith('.jpeg') || message.file[0].endsWith('.png') || message.file[0].endsWith('.webp') ? (
+                          <Box mt={1} display="flex" justifyContent="flex-start">
+                            <img
+                              src={getFileUrl(message) || ''}
+                              alt="attachment"
+                              style={{ maxWidth: '100%', maxHeight: 150, borderRadius: 8, cursor: 'pointer' }}
+                              onClick={() => setSelectedImage(getFileUrl(message) || '')}
+                            />
+                          </Box>
+                        ) : (
+                          <Box mt={1} display="flex" justifyContent="flex-start">
+                            <Typography variant="body2" color="#7289da">
+                              <a href={getFileUrl(message) || ''} target="_blank" rel="noopener noreferrer" style={{ color: '#7289da' }}>
+                                {message.file[0]}
+                              </a>
+                            </Typography>
+                          </Box>
+                        )
+                      )}
+                    </Box>
+                  }
+                />
+              </ListItem>
+            );
+          })}
           <div ref={messagesEndRef} />
         </List>
         <Divider sx={{ mt: 2, mb: 2, bgcolor: '#42454a' }} />
