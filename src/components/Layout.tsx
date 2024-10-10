@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import Navbar from './Navbar';
 import { Box, Typography, Button } from '@mui/material'; // MUI'dan Button eklendi
@@ -56,12 +56,12 @@ const Layout: React.FC<LayoutProps> = ({ conversations, selectedConversationId }
           variant="contained" 
           onClick={handleLogout}
           sx={{
-            backgroundColor: '#7289da', // Butonun arka plan rengi (Discord mavimsi mor tonu)
-            color: '#fff', // Butonun yazı rengi
+            backgroundColor: '#7289da',
+            color: '#fff',
             '&:hover': {
-              backgroundColor: '#677bc4', // Hover durumu için daha açık bir ton
+              backgroundColor: '#677bc4',
             },
-            borderRadius: 2, // Hafif yuvarlatılmış köşeler
+            borderRadius: 2,
           }}
         >
           Çıkış Yap
@@ -74,31 +74,25 @@ const Layout: React.FC<LayoutProps> = ({ conversations, selectedConversationId }
         flexGrow={1} 
         height="calc(100vh - 64px)" 
         overflow="hidden"
-        sx={{ padding: 0, margin: 0 }} // Gereksiz boşlukları kaldırmak için padding ve margin sıfırlandı
+        sx={{ padding: 0, margin: 0 }} 
       >
         {/* Navbar: sabit genişlik ve gizlenmiş scroll */}
-        {/* <Box 
+        <Box
           sx={{
-            width: 250, // Navbar için sabit genişlik
-            backgroundColor: '#1e1e1e', // Koyu bir arka plan
-            flexShrink: 0, 
-            overflowY: 'auto', // Navbar çok genişlerse dikey scroll olur
-            borderRight: '1px solid #333', // Sağ tarafında hafif bir sınır
-
-            // Scroll barını gizleme stili:
-            scrollbarWidth: 'none',  // Firefox için
+            width: '5%', // Navbar sabit genişlik
+            flexShrink: 0,
+            overflowY: 'hidden', // Kaydırılabilir ama taşmaz
+            scrollbarWidth: 'none', // Firefox için
             '&::-webkit-scrollbar': {
-              display: 'none', // Chrome ve Safari için
+              display: 'none', // Chrome ve diğer WebKit tarayıcılar için
             },
-            padding: 0, // Navbar'ın içinde herhangi bir padding olmadığından emin olalım
-            margin: 0, // Navbar'ın dışındaki boşlukları da kaldırıyoruz
           }}
-        > */}
+        >
           <Navbar 
             conversations={conversations} 
             onConversationSelect={handleConversationSelect} 
           />
-        {/* </Box> */}
+        </Box>
 
         {/* Mesajlaşma alanı: ConversationDetails */}
         <Box 
@@ -108,9 +102,9 @@ const Layout: React.FC<LayoutProps> = ({ conversations, selectedConversationId }
           justifyContent="flex-start"
           alignItems="stretch"
           overflow="hidden" 
-          padding={0} // İçerik kısmındaki boşlukları sıfırlamak için padding 0 yapıldı
-          margin={0} // Kenarlardaki tüm boşlukları kaldırmak için margin sıfırlandı
-          bgcolor="#121212" // Arka planı biraz daha koyu
+          padding={0}
+          margin={0}
+          bgcolor="#121212"
         >
           {conversationId ? (
             <Box
@@ -123,11 +117,10 @@ const Layout: React.FC<LayoutProps> = ({ conversations, selectedConversationId }
                 justifyContent: 'space-between',
                 alignItems: 'stretch',
                 overflow: 'hidden',
-                padding: 0, // Boşlukları kaldırmak için padding 0 yapıldı
-                margin: 0, // Ekstra boşlukları kaldırmak için margin 0 yapıldı
+                padding: 0,
+                margin: 0,
               }}
             >
-              {/* ConversationDetails genişliği kaplıyor */}
               <ConversationDetails 
                 key={conversationId} 
                 conversationId={conversationId} 
@@ -142,7 +135,7 @@ const Layout: React.FC<LayoutProps> = ({ conversations, selectedConversationId }
               width="100%" 
               height="100%"
               textAlign="center"
-              sx={{ padding: 0, margin: 0 }} // Ekstra boşlukları sıfırlamak için padding ve margin 0 yapıldı
+              sx={{ padding: 0, margin: 0 }}
             >
               <Typography variant="h4" fontWeight="bold" gutterBottom>
                 Welcome to the Chat Application
