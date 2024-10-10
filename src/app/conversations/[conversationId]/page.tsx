@@ -163,185 +163,189 @@ export default function ConversationDetails({ conversationId }: ConversationDeta
   const id = open ? 'emoji-popover' : undefined;
 
   return (
-  <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh" bgcolor="#36393f" color="#dcddde" p={3}>
-    <Paper elevation={3} sx={{ width: '100%', height: '80vh', p: 2, mb: 2, bgcolor: '#2f3136', color: '#dcddde', borderRadius: 2 }}>
-    <List
-  sx={{
-    maxHeight: '60vh',
-    overflowY: 'auto',
-    mb: 2,
-    bgcolor: '#2f3136',
-    borderRadius: 1,
-    '&::-webkit-scrollbar': {
-      width: '8px',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: '#555',
-      borderRadius: '4px',
-    },
-    '&::-webkit-scrollbar-track': {
-      backgroundColor: '#2f3136',
-    },
-  }}
->
-  {messages.map((message, index) => {
-    const user = users[message.sender];
-    const isSender = pb.authStore.model?.id === message.sender;
-    const previousMessage = messages[index - 1];
-    const showDateDivider = !previousMessage || new Date(previousMessage.timestamp).toDateString() !== new Date(message.timestamp).toDateString();
-    return (
-      <div key={message.id}>
-        {showDateDivider && (
-          <Box display="flex" justifyContent="center" my={2}>
-            <Typography variant="caption" color="#72767d">
-              {new Date(message.timestamp).toDateString()}
-            </Typography>
-          </Box>
-        )}
-        <Grid container justifyContent={isSender ? 'flex-end' : 'flex-start'} sx={{ mb: 1, pr: isSender ? 2 : 0, pl: isSender ? 0 : 2 }}>
-          <Grid item xs={12} sm={10} md={8} lg={6}>
-            <Box display="flex" flexDirection={isSender ? 'row-reverse' : 'row'} alignItems="flex-start" gap={1.5}>
-              <Avatar src={getAvatarUrl(user) || undefined} sx={{ bgcolor: '#7289da', width: 32, height: 32 }}>
-                {!user?.avatar && user?.username[0]}
-              </Avatar>
-              <Paper sx={{ p: 1.5, bgcolor: isSender ? '#3b4252' : '#4c566a', borderRadius: 2, maxWidth: '100%' }}>
-                <Typography variant="body2" color="#ffffff">
-                  {message.content}
-                </Typography>
-                <Typography variant="caption" color="#72767d" display="block" textAlign={isSender ? 'right' : 'left'}>
-                  {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </Typography>
-                {message.file && message.file.length > 0 && (
-                  <Box mt={1} display="flex" justifyContent={isSender ? 'flex-end' : 'flex-start'}>
-                    {message.file[0].endsWith('.jpg') || message.file[0].endsWith('.jpeg') || message.file[0].endsWith('.png') || message.file[0].endsWith('.webp') ? (
-                      <img
-                        src={getFileUrl(message) || ''}
-                        alt="attachment"
-                        style={{ maxWidth: '100%', maxHeight: 150, borderRadius: 8, cursor: 'pointer' }}
-                        onClick={() => setSelectedImage(getFileUrl(message) || '')}
-                      />
-                    ) : (
-                      <Typography variant="body2" color="#7289da">
-                        <a href={getFileUrl(message) || ''} target="_blank" rel="noopener noreferrer" style={{ color: '#7289da' }}>
-                          {message.file[0]}
-                        </a>
-                      </Typography>
-                    )}
-                  </Box>
-                )}
-              </Paper>
-            </Box>
-          </Grid>
-        </Grid>
-      </div>
-    );
-  })}
-  <div ref={messagesEndRef} /> {/* Liste sonuna eklenen div ile ref atanması */}
-</List>
-
-
-      <Box
-        display="flex"
-        alignItems="center"
-        gap={2}
-        sx={{
-          position: 'sticky', // Sabit olarak görünmesini sağlar
-          bottom: 0,
-          backgroundColor: '#2f3136',
-          p: 2,
-          borderRadius: 2,
-          zIndex: 1,
-        }}
-      >
-        <TextField
-          fullWidth
-          variant="filled"
-          placeholder="Write a message..."
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          InputProps={{
-            style: { color: '#dcddde', backgroundColor: '#40444b', borderRadius: 20, padding: '10px' },
-            startAdornment: (
-              <InputAdornment position="start">
-                <IconButton sx={{ color: '#7289da' }} onClick={handleEmojiClick}>
-                  <EmojiEmotionsIcon />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-          sx={{ input: { color: '#dcddde' }, bgcolor: '#40444b', borderRadius: 2 }}
-        />
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={emojiAnchorEl}
-          onClose={handleEmojiClose}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
+    <Box display="flex" flexDirection="column" height="100vh" bgcolor="#36393f" color="#dcddde">
+      <Paper elevation={3} sx={{ width: '100%', flexGrow: 1, display: 'flex', flexDirection: 'column', bgcolor: '#2f3136', color: '#dcddde', borderRadius: 2, overflow: 'hidden' }}>
+        <List
           sx={{
-            '& .MuiPaper-root': {
-              backgroundColor: '#36393f',
-              color: '#dcddde',
-              borderRadius: '8px',
-              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)',
+            flexGrow: 1,
+            overflowY: 'auto',
+            mb: 2,
+            bgcolor: '#2f3136',
+            borderRadius: 1,
+            '&::-webkit-scrollbar': {
+              width: '8px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#555',
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: '#2f3136',
             },
           }}
         >
-          <EmojiPicker
-            onEmojiClick={handleEmojiSelect}
-            disableAutoFocus
-            theme="dark"
-            searchDisabled={false}
-            skinTonesDisabled={false}
-          />
-        </Popover>
-
-        <input
-          accept="image/*,application/pdf"
-          style={{ display: 'none' }}
-          id="file-upload"
-          type="file"
-          onChange={handleFileChange}
-        />
-        <label htmlFor="file-upload">
-          <IconButton component="span" sx={{ color: '#7289da' }}>
-            <AttachFileIcon />
-          </IconButton>
-        </label>
-        {selectedFile && (
-          <Box display="flex" alignItems="center" gap={1} bgcolor="#40444b" p={1} borderRadius={2}>
-            <Typography variant="body2" color="#dcddde">
-              {selectedFile.name}
-            </Typography>
-            <IconButton size="small" sx={{ color: '#ff6f61' }} onClick={() => setSelectedFile(null)}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        )}
-        <Button
-          variant="contained"
-          color="primary"
-          endIcon={isUploading ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
-          onClick={handleSendMessage}
-          disabled={isUploading}
-          sx={{ bgcolor: '#7289da', '&:hover': { bgcolor: '#677bc4' }, borderRadius: 1, height: '100%' }}
+          {messages.map((message, index) => {
+            const user = users[message.sender];
+            const isSender = pb.authStore.model?.id === message.sender;
+            const previousMessage = messages[index - 1];
+            const showDateDivider = !previousMessage || new Date(previousMessage.timestamp).toDateString() !== new Date(message.timestamp).toDateString();
+            return (
+              <div key={message.id}>
+                {showDateDivider && (
+                  <Box display="flex" justifyContent="center" my={2}>
+                    <Typography variant="caption" color="#72767d">
+                      {new Date(message.timestamp).toDateString()}
+                    </Typography>
+                  </Box>
+                )}
+                <Grid container justifyContent={isSender ? 'flex-end' : 'flex-start'} sx={{ mb: 1, pr: isSender ? 2 : 0, pl: isSender ? 0 : 2 }}>
+                  <Grid item xs={12} sm={10} md={8} lg={6}>
+                    <Box display="flex" flexDirection={isSender ? 'row-reverse' : 'row'} alignItems="flex-start" gap={1.5}>
+                      <Avatar src={getAvatarUrl(user) || undefined} sx={{ bgcolor: '#7289da', width: 32, height: 32 }}>
+                        {!user?.avatar && user?.username[0]}
+                      </Avatar>
+                      <Paper sx={{ p: 1.5, bgcolor: isSender ? '#3b4252' : '#4c566a', borderRadius: 2, maxWidth: '100%' }}>
+                        <Typography variant="body2" color="#ffffff">
+                          {message.content}
+                        </Typography>
+                        <Typography variant="caption" color="#72767d" display="block" textAlign={isSender ? 'right' : 'left'}>
+                          {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </Typography>
+                        {message.file && message.file.length > 0 && (
+                          <Box mt={1} display="flex" justifyContent={isSender ? 'flex-end' : 'flex-start'}>
+                            {message.file[0].endsWith('.jpg') || message.file[0].endsWith('.jpeg') || message.file[0].endsWith('.png') || message.file[0].endsWith('.webp') ? (
+                              <img
+                                src={getFileUrl(message) || ''}
+                                alt="attachment"
+                                style={{ maxWidth: '100%', maxHeight: 150, borderRadius: 8, cursor: 'pointer' }}
+                                onClick={() => setSelectedImage(getFileUrl(message) || '')}
+                              />
+                            ) : (
+                              <Typography variant="body2" color="#7289da">
+                                <a href={getFileUrl(message) || ''} target="_blank" rel="noopener noreferrer" style={{ color: '#7289da' }}>
+                                  {message.file[0]}
+                                </a>
+                              </Typography>
+                            )}
+                          </Box>
+                        )}
+                      </Paper>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </div>
+            );
+          })}
+          <div ref={messagesEndRef} /> {/* Liste sonuna eklenen div ile ref atanması */}
+        </List>
+  
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={2}
+          sx={{
+            backgroundColor: '#2f3136',
+            p: 2,
+            borderRadius: 2,
+            zIndex: 1,
+          }}
         >
-          {isUploading ? 'Uploading...' : 'Send'}
-        </Button>
-      </Box>
-    </Paper>
-    <Dialog open={Boolean(selectedImage)} onClose={() => setSelectedImage(null)} maxWidth="md" fullWidth>
-      <DialogContent sx={{ p: 0 }}>
-        <img src={selectedImage || ''} alt="Full Size" style={{ width: '100%', height: 'auto' }} />
-      </DialogContent>
-    </Dialog>
-  </Box>
-);
+          <TextField
+  fullWidth
+  variant="filled"
+  placeholder="Write a message..."
+  value={newMessage}
+  onChange={(e) => setNewMessage(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  }}
+  InputProps={{
+    style: { color: '#dcddde', backgroundColor: '#40444b', borderRadius: 20, padding: '10px' },
+    startAdornment: (
+      <InputAdornment position="start">
+        <IconButton sx={{ color: '#7289da' }} onClick={handleEmojiClick}>
+          <EmojiEmotionsIcon />
+        </IconButton>
+      </InputAdornment>
+    ),
+  }}
+  sx={{ input: { color: '#dcddde' }, bgcolor: '#40444b', borderRadius: 2 }}
+/>
 
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={emojiAnchorEl}
+            onClose={handleEmojiClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            sx={{
+              '& .MuiPaper-root': {
+                backgroundColor: '#36393f',
+                color: '#dcddde',
+                borderRadius: '8px',
+                boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)',
+              },
+            }}
+          >
+            <EmojiPicker
+              onEmojiClick={handleEmojiSelect}
+              disableAutoFocus
+              theme="dark"
+              searchDisabled={false}
+              skinTonesDisabled={false}
+            />
+          </Popover>
+  
+          <input
+            accept="image/*,application/pdf"
+            style={{ display: 'none' }}
+            id="file-upload"
+            type="file"
+            onChange={handleFileChange}
+          />
+          <label htmlFor="file-upload">
+            <IconButton component="span" sx={{ color: '#7289da' }}>
+              <AttachFileIcon />
+            </IconButton>
+          </label>
+          {selectedFile && (
+            <Box display="flex" alignItems="center" gap={1} bgcolor="#40444b" p={1} borderRadius={2}>
+              <Typography variant="body2" color="#dcddde">
+                {selectedFile.name}
+              </Typography>
+              <IconButton size="small" sx={{ color: '#ff6f61' }} onClick={() => setSelectedFile(null)}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          )}
+          <Button
+            variant="contained"
+            color="primary"
+            endIcon={isUploading ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
+            onClick={handleSendMessage}
+            disabled={isUploading}
+            sx={{ bgcolor: '#7289da', '&:hover': { bgcolor: '#677bc4' }, borderRadius: 1, height: '100%' }}
+          >
+            {isUploading ? 'Uploading...' : 'Send'}
+          </Button>
+        </Box>
+      </Paper>
+      <Dialog open={Boolean(selectedImage)} onClose={() => setSelectedImage(null)} maxWidth="md" fullWidth>
+        <DialogContent sx={{ p: 0 }}>
+          <img src={selectedImage || ''} alt="Full Size" style={{ width: '100%', height: 'auto' }} />
+        </DialogContent>
+      </Dialog>
+    </Box>
+  );
+  
 }

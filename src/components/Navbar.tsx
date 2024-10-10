@@ -10,12 +10,8 @@ import {
   Modal,
   Typography,
   TextField,
-  Checkbox,
-  FormControlLabel,
-  Grid,
   Paper,
   IconButton,
-  useTheme,
   Autocomplete,
 } from '@mui/material';
 import { styled } from '@mui/system';
@@ -63,7 +59,6 @@ const Navbar: React.FC<NavbarProps> = ({ conversations, onConversationSelect }) 
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [groupNameError, setGroupNameError] = useState('');
   const [selectedUsersError, setSelectedUsersError] = useState('');
-  const theme = useTheme();
 
   // Kullanıcı listesini ve mevcut kullanıcıyı almak için useEffect
   useEffect(() => {
@@ -153,7 +148,7 @@ const Navbar: React.FC<NavbarProps> = ({ conversations, onConversationSelect }) 
           <React.Fragment key={conversation.id}>
             <Tooltip title={conversation.name} placement="right">
               <ListItem
-                button
+                component="button"
                 onClick={() => onConversationSelect(conversation.id)}
                 sx={{
                   mb: 1,
